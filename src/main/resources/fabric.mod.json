@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "blazed",
+  "version": "${version}",
+  "name": "Blazed",
+  "description": "Blazed on top!",
+  "authors": [
+    "ayan7601"
+  ],
+  "contact": {
+    "homepage": "https://blazedclient.com",
+    "repo": "https://github.com/ayanh7601/Blazed",
+    "discord": "https://discord.gg/yBbTUB243X"
+  },
+  "license": "All Rights Reserved",
+  "icon": "assets/template/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "com.ayan7601.blazed.BlazedAddon"
+    ],
+  "mixinsquared": [
+    "com.ayan7601.blazed.mixins.MeteorMixinCanceller"
+  ]
+  },
+  "mixins": [
+    "mixins.json"
+  ],
+  "custom": {
+    "meteor-client:color": "225,25,25",
+    "modmenu": {
+      "links": {
+        "modmenu.website": "https://blazedclient.com",
+        "modmenu.discord": "https://discord.gg/blazed"
+      }
+    }
+  },
+  "depends": {
+    "java": ">=21",
+    "minecraft": ["${mc_version}"],
+    "meteor-client": "*"
+  }
+}

@@ -1,0 +1,198 @@
+# Blazed
+ 
+![Blazed Addon Banner](src/main/resources/assets/template/icon.png)
+
+[![Downloads](https://img.shields.io/github/downloads/ayan7601/Blazed/total.svg?style=for-the-badge&label=Downloads)](https://github.com/ayan7601/Blazed/releases) [![Stars](https://img.shields.io/github/stars/ayan7601/Blazed?style=for-the-badge)](https://github.com/ayan7601/Blazed) [![Repo Size](https://img.shields.io/github/repo-size/ayan7601/Blazed?style=for-the-badge)](https://github.com/ayan7601/Blazed) [![Discord](https://img.shields.io/badge/Discord-Join%20Community-007ec6?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/yBbTUB243X)
+
+---
+
+## Meteor Client Addon For almost every sever
+
+**Blazed** is a free Meteor Client addon designed specifically for servers. I made this to automate the boring and repetitive tasks I kept doing in-game and to give others access to high-quality tools **without paying**. I've seen many paid clients that do less than this one — this is my free alternative.
+
+**79 modules** across 3 categories. Minecraft **1.21.4, 1.21.10, 1.21.11, 26.1.2, 26.2**.
+
+---
+
+## 🚀Features
+
+### Main Modules (39)
+
+| Module | Description |
+|---|---|
+| Admin Hud | Tells you when staff are in tab with live skin faces |
+| Admin List | List of administrators to be ignored by other modules |
+| AH Sell | Automatically sells all hotbar items using /ah sell |
+| AH Sniper | Snipes items from auction house for cheap prices (not implemented yet)|
+| Auto Blaze Rod Order | Buys/sells blaze rods in orders for profit (not implemented yet) |
+| Auto Order | Automatically orders items from the server shop (not implemented yet) |
+| Auto Pearl Chain | Chains pearls after teleport detection |
+| Auto Mine | Automatically mines the selected items |
+| Auto Sell | Automatically sells items |
+| Auto Spawner Sell | Drops bones from spawner and sells them |
+| Auto Shulker Order | Buys shulkers + sells in orders with player targeting & blacklist |
+| Auto Shulker Shell Order | Buys shulker shells + sells in orders for profit (FAST MODE) |
+| Auto Totem Order | Buys totems + sells in orders with player targeting & blacklist |
+| Auto Tree Farmer | Automated tree farming with replanting |
+| Blaze Rod Dropper | Buys blaze rods + drops them |
+| Coord Snapper | Copies coordinates to clipboard + optional webhook |
+| Emergency Order | Dumps an item into /order when a watched player gets close |
+| Emergency Seller | Panic-sells selected items |
+| Fake Pay | Fakes /pay instead of sending it |
+| Fake Scoreboard | Replaces the sidebar with your own numbers |
+| Blazed Freecam | Move freely with scroll-adjustable speed |
+| Hide Scoreboard | Hides sidebar scoreboard |
+| Home Reset | Runs /delhome + /sethome for a selected slot |
+| No Block Interact | Pearl through containers by blocking GUI interactions |
+| Order Dropper | Processes orders + drops items |
+| Order Sniper | Snipes orders and sells for your price with blacklist (not implemented yet) |
+| Player Detection | Detects players in the world |
+| Premium Tunnel Base Finder | Advanced tunnel mining with lava detection, pearl-through, and safety systems |
+| Rain Noti | Notifies when it starts raining with webhook support |
+| RTP Base Finder | Mines to Y=-58 then runs /rtp east (not implemented yet) |
+| RTP End Base Finder | RTPs in the End searching for stashes (not implemented yet) |
+| RTP Nether Base Finder | RTPs Nether searching for stashes (not implemented yet) |
+| RTPer | RTP to coordinates or find specific biomes (not implemented yet) |
+| Shop Buyer | Buys selected items from PVP shop |
+| Shulker Dropper | Buys shulkers + drops them |
+| Spawner Dropper | Drops all spawner loot |
+| Spawner Order | Orders all spawner loot |
+| Spawner Protect | Breaks spawner + stores it when player detected |
+| Storage Stealer | Steals items from chests and shulkers |
+| Tab Detector | Detects when specific players join/leave |
+| TPA All Macro | Cycles players + sends /tpa or /tpahere (not implemented yet) |
+| TPA Macro | Spam-sends /tpa or /tpahere + auto-clicks confirmation |
+| Tunnel Base Finder | Mines downward, then uses #tunnel horizontally (not implemented yet) |
+| UI Helper | Helps perform various UI tasks automatically (not implemented yet) |
+
+### ESP Modules (27)
+
+| Module | Description |
+|---|---|
+| 1x1x1 Holes | Highlights small player-made air holes |
+| Advanced Stash Finder | Stash finder with webhook + auto disconnect |
+| Amethyst ESP | Finds amethyst geodes and marks the chunks holding them |
+| Bedrock Void ESP | ESP for bedrock void patterns |
+| Beehive ESP | Detects full beehives with threading + tracer |
+| Block Notifier | Notifies when selected blocks appear + ESP |
+| Chunk Finder | Finds suspicious chunk patterns 
++ 13 optional base detectors |
+| Cluster Finder | ESP for amethyst clusters + buds |
+| Collectible ESP | Highlights framed collectibles + banners |
+| Covered Hole | Detects covered holes with performance optimization |
+| Deepslate ESP | ESP for deepslate variants |
+| Dripstone ESP | Detects long dripstones with threading |
+| Drowned Trident ESP | Highlights drowned with tridents |
+| Fake Scoreboard | Custom Blazed scoreboard overlay (not implemented yet) |
+| Hole Tunnel Stairs ESP | Highlights holes, tunnels, stairs |
+| Invis ESP | 3D hitbox rendering for invisible players and mobs |
+| Kelp ESP | Highlights suspicious kelp chunk patterns |
+| Light ESP | Light source detection with thermal color rendering |
+| Llama ESP | Detects llamas with tracers + webhook |
+| Pillager ESP | ESP for pillagers + tracers + webhook |
+| Piston ESP | ESP for pistons + sticky pistons |
+| Region Map | DonutSMP region map with location display |
+| Rotated Deepslate ESP | Highlights rotated deepslate blocks |
+| Skeleton ESP | Renders skeleton model inside players |
+| Spawner Notifier | Notifies when spawners are detected + ESP |
+| Sweet Berry ESP | Detects berry bushes at specific growth stages |
+| Villager ESP | Detects villagers + zombie villagers |
+| Vine ESP | Highlights vines touching the ground |
+| Wandering ESP | Detects wandering traders |
+
+### PvP Modules (13)
+
+| Module | Description |
+|---|---|
+| Aim Assist | Aims at entities (Grim AC v3 bypass) (not implemented yet)|
+| Anchor Macro | Automatically charges and explodes respawn anchors |
+| Anti Trap | Escape armor stands + minecart traps |
+| Auto Double Hand | Switches to totem after pop |
+| Auto Inv Totem | Moves totems to offhand after pop in inventory |
+| Breach Swap | Mace swap on attack + return (not implemented yet) |
+| Crystal Macro | Fast crystal placing |
+| Double Anchor Macro | Places + charges 2 anchors (not implemented yet) |
+| Hover Totem | Equips offhand totem when hovering in inventory |
+| Key Pearl | Switches + throws pearl on keybind |
+| Lunge Macro | Swaps to lunge spear, lunges, swaps back (not on 1.21.4) |
+| Shield Breaker | Axe swap + auto shield break then switch back |
+| Sword Place Obsidian | Right-click obsidian then switch back (not implemented yet) |
+| Wind Pearl Macro | Throws pearl then wind charge (not implemented yet) |
+
+---
+
+## 🔗Great Modules to Pair With This Addon
+
+Pair your Blazed setup with these built-in Meteor modules for max efficiency:
+
+- `Auto Replenish` – Automatically restocks blocks/tools
+- `Auto Eat` – Keeps your hunger up
+- `Fast Place` – Places blocks faster than vanilla
+- `Auto Tool` – Automatically switches to the best tool
+- `Freecam` – View surroundings without moving
+
+- `Storage ESP` – Highlights chests, shulkers, barrels
+- `Tracers` – Draws lines to players, mobs, storage
+
+---
+
+## ❓FAQ
+
+### 🔒 Is it safe to use?
+
+Yes, it's completely open-source. There are no token loggers, backdoors, or obfuscation. If you're unsure, feel free to inspect the code or compile it yourself.
+
+### ❔ Why is it free?
+
+I made this addon to help DonutSMP players automate boring tasks without paying ridiculous prices for private clients. It's a free, powerful alternative.
+
+### 📦 Can I use this on other servers?
+
+This addon was made specifically for DonutSMP, and most features are designed to work only there (e.g., Auction Sniper, Auto Sell, RTP Base Finder). While some basic modules may still work elsewhere, the full functionality is best experienced on DonutSMP.
+
+### 🛠️ How do I get updates?
+
+Join the [Discord server](https://discord.gg/yBbTUB243X) for update announcements, changelogs, and early access to new modules. You can also star/watch the GitHub repo.
+
+---
+
+## 📥 Installation
+
+1. 🔽 **Download Meteor Client**
+   From: [Meteor Client](https://meteorclient.com/)
+
+2. 🔽 **Download Baritone**
+   From: [Baritone](https://meteorclient.com/)
+
+3. 🧵 **Install Fabric Loader**
+   Download from: [Fabric Loader](https://fabricmc.net/use/)
+
+4. 🧩**Put Meteor Client and this addon in `.minecraft/mods`**
+    - Locate your `.minecraft` folder (type `%appdata%` on Windows search)
+    - Drop both `.jar` files inside `/mods`
+
+5. 🚀**Launch Minecraft with the Fabric profile**
+   Open the Meteor GUI with `Right Shift` and enjoy!
+
+---
+
+## 🧠 Credits
+
+Huge thanks to the projects that make this addon possible:
+
+- [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)
+- [Baritone](https://github.com/cabaletta/baritone)
+- [FabricMC](https://fabricmc.net/)
+- [ExploitPreventer](https://github.com/NikOverflow/ExploitPreventer) by NikOverflow (MIT) — bundled inside the jar
+- [Claude AI](https://claude.ai/)
+- Github Contributors
+
+---
+
+## ⚠️Disclaimer
+
+This project is provided **as-is** with **no warranty** of any kind.
+
+> I am **not responsible** for any **bans, data loss, in-game money loss**, or **any other consequences** that may arise from using this addon.
+>
+> **Use at your own risk.** If you lose items, get banned, or otherwise suffer any kind of issue — I simply don't care. You've been warned. Use an alt.
