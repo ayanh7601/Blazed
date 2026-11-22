@@ -15,8 +15,8 @@ import org.meteordev.starscript.Script;
 import com.ayan7601.blazed.BlazedAddon;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import meteordevelopment.discordipc.DiscordIPC;
-import meteordevelopment.discordipc.RichPresence;
+import com.ayan7601.blazed.ipc.DiscordIPC;
+import com.ayan7601.blazed.ipc.RichPresence;
 import meteordevelopment.meteorclient.events.game.OpenScreenEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.gui.GuiTheme;
@@ -57,12 +57,8 @@ import net.minecraft.client.gui.screens.worldselection.EditWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.realms.RealmsScreen;
 import net.minecraft.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DiscordPresence extends Module {
-    private static final Logger LOG = LoggerFactory.getLogger("Blazed");
-
     public enum SelectMode {
         Random,
         Sequential
@@ -138,11 +134,10 @@ public class DiscordPresence extends Module {
 
     @Override
     public void onActivate() {
-        DiscordIPC.setOnError((code, message) -> LOG.warn("Discord IPC error {}: {}", code, message));
-        boolean connected = DiscordIPC.start(1545725506870313012L,
-            () -> LOG.info("Discord IPC handshake completed; Discord is ready."));
-        if (connected) LOG.info("Discord IPC opened; waiting for Discord handshake.");
-        else LOG.warn("Discord IPC could not open a connection to a running Discord client.");
+        // Uses Blazed's own copy of discord-ipc (com.ayan7601.blazed.ipc). The copy bundled in
+        // Meteor 26.2-35 builds the Windows pipe path as \\?\pipe\..., which Java 25 cannot open.
+        boolean started = DiscordIPC.start(1545725506870313012L, () -> info("Discord IPC ready"));
+        if (!started) warning("Discord IPC could not open a connection. Is the Discord desktop app running?");
 
         rpc.setStart(System.currentTimeMillis() / 1000L);
 
