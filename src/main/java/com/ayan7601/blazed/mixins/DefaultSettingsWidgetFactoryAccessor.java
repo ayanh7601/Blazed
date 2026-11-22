@@ -9,6 +9,6 @@ import java.util.Map;
 
 @Mixin(SettingsWidgetFactory.class)
 public interface DefaultSettingsWidgetFactoryAccessor {
-    @Accessor(value = "factories", remap = false)
+    @Accessor("factories")
     Map<Class<?>, SettingsWidgetFactory.Factory> getFactories();
 }

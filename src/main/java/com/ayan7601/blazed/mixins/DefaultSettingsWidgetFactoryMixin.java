@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(DefaultSettingsWidgetFactory.class)
 public class DefaultSettingsWidgetFactoryMixin {
 
-    @Inject(method = "<init>(Lmeteordevelopment/meteorclient/gui/GuiTheme;)V", at = @At("TAIL"), remap = false)
+    @Inject(method = "<init>(Lmeteordevelopment/meteorclient/gui/GuiTheme;)V", at = @At("TAIL"))
     private void addRandomBetweenFactories(GuiTheme theme, CallbackInfo ci) {
         DefaultSettingsWidgetFactory factory = (DefaultSettingsWidgetFactory) (Object) this;
         DefaultSettingsWidgetFactoryAccessor accessor = (DefaultSettingsWidgetFactoryAccessor) factory;

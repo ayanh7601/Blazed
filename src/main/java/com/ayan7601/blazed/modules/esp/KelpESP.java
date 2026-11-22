@@ -11,14 +11,13 @@ import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.KelpBlock;
-import net.minecraft.block.KelpPlantBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.KelpBlock;
+import net.minecraft.world.level.block.KelpPlantBlock;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,11 +50,11 @@ public class KelpESP extends Module {
 
     @Override
     public void onActivate() {
-        if (mc.world == null) return;
+        if (mc.level == null) return;
         flaggedKelpChunks.clear();
 
-        for (Chunk chunk : Utils.chunks()) {
-            if (chunk instanceof WorldChunk worldChunk) scanChunkForKelp(worldChunk);
+        for (ChunkAccess chunk : Utils.chunks()) {
+            if (chunk instanceof LevelChunk worldChunk) scanChunkForKelp(worldChunk);
         }
     }
 
@@ -68,19 +67,19 @@ public class KelpESP extends Module {
     private void onBlockUpdate(BlockUpdateEvent event) {
         BlockPos pos = event.pos;
 
-        Chunk chunk = mc.world.getChunk(pos);
-        if (chunk instanceof WorldChunk worldChunk) {
+        ChunkAccess chunk = mc.level.getChunk(pos);
+        if (chunk instanceof LevelChunk worldChunk) {
             scanChunkForKelp(worldChunk);
         }
     }
 
-    private void scanChunkForKelp(WorldChunk chunk) {
+    private void scanChunkForKelp(LevelChunk chunk) {
         ChunkPos cpos = chunk.getPos();
         flaggedKelpChunks.remove(cpos);
 
-        int xStart = cpos.getStartX();
-        int zStart = cpos.getStartZ();
-        int yMin = chunk.getBottomY();
+        int xStart = cpos.getMinBlockX();
+        int zStart = cpos.getMinBlockZ();
+        int yMin = chunk.getMinY();
         int yMax = yMin + chunk.getHeight();
 
         int kelpColumns = 0;
@@ -120,8 +119,8 @@ public class KelpESP extends Module {
         Color outline = new Color(kelpColor.get());
         for (ChunkPos pos : flaggedKelpChunks) {
             event.renderer.box(
-                pos.getStartX(), 63, pos.getStartZ(),
-                pos.getStartX() + 16, 63, pos.getStartZ() + 16,
+                pos.getMinBlockX(), 63, pos.getMinBlockZ(),
+                pos.getMinBlockX() + 16, 63, pos.getMinBlockZ() + 16,
                 side, outline, kelpShapeMode.get(), 0);
         }
     }

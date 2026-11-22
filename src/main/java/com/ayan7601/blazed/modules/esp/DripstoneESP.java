@@ -11,16 +11,15 @@ import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PointedDripstoneBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -130,11 +129,9 @@ public class DripstoneESP extends Module {
         .visible(useThreading::get)
         .build());
 
-    // Thread-safe collections
     private final Set<BlockPos> longStalactiteBottoms = ConcurrentHashMap.newKeySet();
     private final Set<BlockPos> longStalagmiteTops = ConcurrentHashMap.newKeySet();
 
-    // Threading
     private ExecutorService threadPool;
 
     public DripstoneESP() {
@@ -143,7 +140,7 @@ public class DripstoneESP extends Module {
 
     @Override
     public void onActivate() {
-        if (mc.world == null) return;
+        if (mc.level == null) return;
 
         if (useThreading.get()) {
             threadPool = Executors.newFixedThreadPool(threadPoolSize.get());
@@ -153,14 +150,14 @@ public class DripstoneESP extends Module {
         longStalagmiteTops.clear();
 
         if (useThreading.get()) {
-            for (Chunk chunk : Utils.chunks()) {
-                if (chunk instanceof WorldChunk worldChunk) {
+            for (ChunkAccess chunk : Utils.chunks()) {
+                if (chunk instanceof LevelChunk worldChunk) {
                     threadPool.submit(() -> scanChunk(worldChunk));
                 }
             }
         } else {
-            for (Chunk chunk : Utils.chunks()) {
-                if (chunk instanceof WorldChunk worldChunk) scanChunk(worldChunk);
+            for (ChunkAccess chunk : Utils.chunks()) {
+                if (chunk instanceof LevelChunk worldChunk) scanChunk(worldChunk);
             }
         }
     }
@@ -191,13 +188,12 @@ public class DripstoneESP extends Module {
         BlockState state = event.newState;
 
         Runnable scanTask = () -> {
-            if (state.isOf(Blocks.POINTED_DRIPSTONE)) {
-                // Scan the area around this position for stalactites and stalagmites
+            if (state.is(Blocks.POINTED_DRIPSTONE)) {
                 for (int dx = -2; dx <= 2; dx++) {
                     for (int dz = -2; dz <= 2; dz++) {
                         for (int dy = -16; dy <= 16; dy++) {
-                            BlockPos scanPos = pos.add(dx, dy, dz);
-                            BlockState scanState = mc.world.getBlockState(scanPos);
+                            BlockPos scanPos = pos.offset(dx, dy, dz);
+                            BlockState scanState = mc.level.getBlockState(scanPos);
 
                             if (isDripstoneTipDown(scanState)) {
                                 StalactiteInfo stalactiteInfo = getStalactiteInfo(scanPos);
@@ -225,8 +221,8 @@ public class DripstoneESP extends Module {
                 }
             } else {
                 longStalagmiteTops.removeIf(topPos -> {
-                    BlockState topState = mc.world.getBlockState(topPos);
-                    return !topState.isOf(Blocks.POINTED_DRIPSTONE) || !isDripstoneTipUp(topState);
+                    BlockState topState = mc.level.getBlockState(topPos);
+                    return !topState.is(Blocks.POINTED_DRIPSTONE) || !isDripstoneTipUp(topState);
                 });
             }
         };
@@ -238,16 +234,16 @@ public class DripstoneESP extends Module {
         }
     }
 
-    private void scanChunk(WorldChunk chunk) {
+    private void scanChunk(LevelChunk chunk) {
         scanChunkForStalactites(chunk);
         scanChunkForStalagmites(chunk);
     }
 
-    private void scanChunkForStalactites(WorldChunk chunk) {
+    private void scanChunkForStalactites(LevelChunk chunk) {
         ChunkPos cpos = chunk.getPos();
-        int xStart = cpos.getStartX();
-        int zStart = cpos.getStartZ();
-        int yMin = chunk.getBottomY();
+        int xStart = cpos.getMinBlockX();
+        int zStart = cpos.getMinBlockZ();
+        int yMin = chunk.getMinY();
         int yMax = yMin + chunk.getHeight();
 
         Set<BlockPos> chunkBottoms = new HashSet<>();
@@ -271,19 +267,18 @@ public class DripstoneESP extends Module {
         }
 
         longStalactiteBottoms.removeIf(pos -> {
-            ChunkPos tipChunk = new ChunkPos(pos);
+            ChunkPos tipChunk = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
             return tipChunk.equals(cpos) && !chunkBottoms.contains(pos);
         });
 
-        // Add new bottoms
         longStalactiteBottoms.addAll(chunkBottoms);
     }
 
-    private void scanChunkForStalagmites(WorldChunk chunk) {
+    private void scanChunkForStalagmites(LevelChunk chunk) {
         ChunkPos cpos = chunk.getPos();
-        int xStart = cpos.getStartX();
-        int zStart = cpos.getStartZ();
-        int yMin = chunk.getBottomY();
+        int xStart = cpos.getMinBlockX();
+        int zStart = cpos.getMinBlockZ();
+        int yMin = chunk.getMinY();
         int yMax = yMin + chunk.getHeight();
 
         Set<BlockPos> chunkTops = new HashSet<>();
@@ -306,26 +301,24 @@ public class DripstoneESP extends Module {
             }
         }
 
-        // Remove tops that are no longer valid for this chunk
         longStalagmiteTops.removeIf(pos -> {
-            ChunkPos tipChunk = new ChunkPos(pos);
+            ChunkPos tipChunk = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
             return tipChunk.equals(cpos) && !chunkTops.contains(pos);
         });
 
-        // Add new tops
         longStalagmiteTops.addAll(chunkTops);
     }
 
     private boolean isDripstoneTipDown(BlockState state) {
-        return state.isOf(Blocks.POINTED_DRIPSTONE)
-            && state.contains(PointedDripstoneBlock.VERTICAL_DIRECTION)
-            && state.get(PointedDripstoneBlock.VERTICAL_DIRECTION) == Direction.DOWN;
+        return state.is(Blocks.POINTED_DRIPSTONE)
+            && state.hasProperty(PointedDripstoneBlock.TIP_DIRECTION)
+            && state.getValue(PointedDripstoneBlock.TIP_DIRECTION) == Direction.DOWN;
     }
 
     private boolean isDripstoneTipUp(BlockState state) {
-        return state.isOf(Blocks.POINTED_DRIPSTONE)
-            && state.contains(PointedDripstoneBlock.VERTICAL_DIRECTION)
-            && state.get(PointedDripstoneBlock.VERTICAL_DIRECTION) == Direction.UP;
+        return state.is(Blocks.POINTED_DRIPSTONE)
+            && state.hasProperty(PointedDripstoneBlock.TIP_DIRECTION)
+            && state.getValue(PointedDripstoneBlock.TIP_DIRECTION) == Direction.UP;
     }
 
     private static class StalactiteInfo {
@@ -339,32 +332,31 @@ public class DripstoneESP extends Module {
     }
 
     private StalactiteInfo getStalactiteInfo(BlockPos tipPos) {
-        if (mc.world == null) return null;
+        if (mc.level == null) return null;
 
         int length = 0;
         BlockPos currentPos = tipPos;
         BlockPos bottomPos = tipPos;
 
-        // Count downward from the tip
-        while (currentPos.getY() >= mc.world.getBottomY()) {
-            BlockState state = mc.world.getBlockState(currentPos);
+        while (currentPos.getY() >= mc.level.getMinY()) {
+            BlockState state = mc.level.getBlockState(currentPos);
 
-            if (!state.isOf(Blocks.POINTED_DRIPSTONE)) {
+            if (!state.is(Blocks.POINTED_DRIPSTONE)) {
                 break;
             }
 
-            if (!state.contains(PointedDripstoneBlock.VERTICAL_DIRECTION)) {
+            if (!state.hasProperty(PointedDripstoneBlock.TIP_DIRECTION)) {
                 break;
             }
 
-            Direction tipDirection = state.get(PointedDripstoneBlock.VERTICAL_DIRECTION);
+            Direction tipDirection = state.getValue(PointedDripstoneBlock.TIP_DIRECTION);
             if (tipDirection != Direction.DOWN) {
                 break;
             }
 
             length++;
             bottomPos = currentPos;
-            currentPos = currentPos.down();
+            currentPos = currentPos.below();
         }
 
         return length > 0 ? new StalactiteInfo(length, bottomPos) : null;
@@ -381,32 +373,31 @@ public class DripstoneESP extends Module {
     }
 
     private StalagmiteInfo getStalagmiteInfo(BlockPos tipPos) {
-        if (mc.world == null) return null;
+        if (mc.level == null) return null;
 
         int length = 0;
         BlockPos currentPos = tipPos;
         BlockPos topPos = tipPos;
 
-        // Count upward from the tip
         while (currentPos.getY() < 320) {
-            BlockState state = mc.world.getBlockState(currentPos);
+            BlockState state = mc.level.getBlockState(currentPos);
 
-            if (!state.isOf(Blocks.POINTED_DRIPSTONE)) {
+            if (!state.is(Blocks.POINTED_DRIPSTONE)) {
                 break;
             }
 
-            if (!state.contains(PointedDripstoneBlock.VERTICAL_DIRECTION)) {
+            if (!state.hasProperty(PointedDripstoneBlock.TIP_DIRECTION)) {
                 break;
             }
 
-            Direction tipDirection = state.get(PointedDripstoneBlock.VERTICAL_DIRECTION);
+            Direction tipDirection = state.getValue(PointedDripstoneBlock.TIP_DIRECTION);
             if (tipDirection != Direction.UP) {
                 break;
             }
 
             length++;
             topPos = currentPos;
-            currentPos = currentPos.up();
+            currentPos = currentPos.above();
         }
 
         return length > 0 ? new StalagmiteInfo(length, topPos) : null;
@@ -421,7 +412,7 @@ public class DripstoneESP extends Module {
     private void onRender(Render3DEvent event) {
         if (mc.player == null) return;
 
-        Vec3d playerPos = mc.player.getLerpedPos(event.tickDelta);
+        Vec3 playerPos = mc.player.getPosition(event.tickDelta);
 
         Color stalactiteSide = new Color(stalactiteColor.get());
         Color stalactiteOutline = new Color(stalactiteColor.get());
@@ -431,19 +422,18 @@ public class DripstoneESP extends Module {
             event.renderer.box(pos, stalactiteSide, stalactiteOutline, stalactiteShapeMode.get(), 0);
 
             if (stalactiteTracers.get()) {
-                Vec3d blockCenter = Vec3d.ofCenter(pos);
+                Vec3 blockCenter = Vec3.atCenterOf(pos);
 
-                Vec3d startPos;
-                if (mc.options.getPerspective().isFirstPerson()) {
-                    Vec3d lookDirection = mc.player.getRotationVector();
-                    startPos = new Vec3d(
+                Vec3 startPos;
+                if (mc.options.getCameraType().isFirstPerson()) {
+                    Vec3 lookDirection = mc.player.getLookAngle();
+                    startPos = new Vec3(
                         playerPos.x + lookDirection.x * 0.5,
                         playerPos.y + mc.player.getEyeHeight(mc.player.getPose()) + lookDirection.y * 0.5,
                         playerPos.z + lookDirection.z * 0.5
                     );
                 } else {
-                    // Third person: use normal eye position
-                    startPos = new Vec3d(
+                    startPos = new Vec3(
                         playerPos.x,
                         playerPos.y + mc.player.getEyeHeight(mc.player.getPose()),
                         playerPos.z
@@ -463,18 +453,18 @@ public class DripstoneESP extends Module {
             event.renderer.box(pos, stalagmiteSide, stalagmiteOutline, stalagmiteShapeMode.get(), 0);
 
             if (stalagmiteTracers.get()) {
-                Vec3d blockCenter = Vec3d.ofCenter(pos);
+                Vec3 blockCenter = Vec3.atCenterOf(pos);
 
-                Vec3d startPos;
-                if (mc.options.getPerspective().isFirstPerson()) {
-                    Vec3d lookDirection = mc.player.getRotationVector();
-                    startPos = new Vec3d(
+                Vec3 startPos;
+                if (mc.options.getCameraType().isFirstPerson()) {
+                    Vec3 lookDirection = mc.player.getLookAngle();
+                    startPos = new Vec3(
                         playerPos.x + lookDirection.x * 0.5,
                         playerPos.y + mc.player.getEyeHeight(mc.player.getPose()) + lookDirection.y * 0.5,
                         playerPos.z + lookDirection.z * 0.5
                     );
                 } else {
-                    startPos = new Vec3d(
+                    startPos = new Vec3(
                         playerPos.x,
                         playerPos.y + mc.player.getEyeHeight(mc.player.getPose()),
                         playerPos.z

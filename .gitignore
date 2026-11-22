@@ -31,8 +31,3 @@ bin/
 # fabric
 
 run/
-# temp files
-
-DEVNODE/
-/DEVNODE
-temp/

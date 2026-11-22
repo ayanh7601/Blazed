@@ -1,5 +1,5 @@
 # Blazed
-
+ 
 ![Blazed Addon Banner](src/main/resources/assets/template/icon.png)
 
 [![Downloads](https://img.shields.io/github/downloads/ayan7601/Blazed/total.svg?style=for-the-badge&label=Downloads)](https://github.com/ayan7601/Blazed/releases) [![Stars](https://img.shields.io/github/stars/ayan7601/Blazed?style=for-the-badge)](https://github.com/ayan7601/Blazed) [![Repo Size](https://img.shields.io/github/repo-size/ayan7601/Blazed?style=for-the-badge)](https://github.com/ayan7601/Blazed) [![Discord](https://img.shields.io/badge/Discord-Join%20Community-007ec6?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/yBbTUB243X)
@@ -10,7 +10,7 @@
 
 **Blazed** is a free Meteor Client addon designed specifically for servers. I made this to automate the boring and repetitive tasks I kept doing in-game and to give others access to high-quality tools **without paying**. I've seen many paid clients that do less than this one — this is my free alternative.
 
-**79 modules** across 3 categories. Minecraft **1.21.4, 1.21.10, 1.21.11, 26.1.2**.
+**79 modules** across 3 categories. Minecraft **1.21.4, 1.21.10, 1.21.11, 26.1.2, 26.2**.
 
 ---
 
@@ -20,35 +20,39 @@
 
 | Module | Description |
 |---|---|
-| Admin List | List of admins - bot stops when admin detected (not fully implemented) |
+| Admin Hud | Tells you when staff are in tab with live skin faces |
+| Admin List | List of administrators to be ignored by other modules |
 | AH Sell | Automatically sells all hotbar items using /ah sell |
-| AH Sniper | Snipes items from auction house for cheap prices |
-| Auto Blaze Rod Order | Buys/sells blaze rods in orders for profit (FAST MODE) |
-| Auto Order | Automatically orders items from the server shop |
+| AH Sniper | Snipes items from auction house for cheap prices (not implemented yet)|
+| Auto Blaze Rod Order | Buys/sells blaze rods in orders for profit (not implemented yet) |
+| Auto Order | Automatically orders items from the server shop (not implemented yet) |
 | Auto Pearl Chain | Chains pearls after teleport detection |
-| Auto Mine |  Automatically mines the selected items |
+| Auto Mine | Automatically mines the selected items |
 | Auto Sell | Automatically sells items |
+| Auto Spawner Sell | Drops bones from spawner and sells them |
 | Auto Shulker Order | Buys shulkers + sells in orders with player targeting & blacklist |
 | Auto Shulker Shell Order | Buys shulker shells + sells in orders for profit (FAST MODE) |
 | Auto Totem Order | Buys totems + sells in orders with player targeting & blacklist |
 | Auto Tree Farmer | Automated tree farming with replanting |
 | Blaze Rod Dropper | Buys blaze rods + drops them |
 | Coord Snapper | Copies coordinates to clipboard + optional webhook |
-| Crate Buyer | Automatically buys common crate items |
+| Emergency Order | Dumps an item into /order when a watched player gets close |
 | Emergency Seller | Panic-sells selected items |
-| Freecam Mining | Freecam with real-position mining override |
+| Fake Pay | Fakes /pay instead of sending it |
+| Fake Scoreboard | Replaces the sidebar with your own numbers |
+| Blazed Freecam | Move freely with scroll-adjustable speed |
 | Hide Scoreboard | Hides sidebar scoreboard |
 | Home Reset | Runs /delhome + /sethome for a selected slot |
 | No Block Interact | Pearl through containers by blocking GUI interactions |
 | Order Dropper | Processes orders + drops items |
-| Order Sniper | Snipes orders and sells for your price with blacklist |
+| Order Sniper | Snipes orders and sells for your price with blacklist (not implemented yet) |
 | Player Detection | Detects players in the world |
 | Premium Tunnel Base Finder | Advanced tunnel mining with lava detection, pearl-through, and safety systems |
 | Rain Noti | Notifies when it starts raining with webhook support |
-| RTP Base Finder | Mines to Y=-58 then runs /rtp east |
-| RTP End Base Finder | RTPs in the End searching for stashes |
-| RTP Nether Base Finder | RTPs Nether searching for stashes |
-| RTPer | RTP to coordinates or find specific biomes |
+| RTP Base Finder | Mines to Y=-58 then runs /rtp east (not implemented yet) |
+| RTP End Base Finder | RTPs in the End searching for stashes (not implemented yet) |
+| RTP Nether Base Finder | RTPs Nether searching for stashes (not implemented yet) |
+| RTPer | RTP to coordinates or find specific biomes (not implemented yet) |
 | Shop Buyer | Buys selected items from PVP shop |
 | Shulker Dropper | Buys shulkers + drops them |
 | Spawner Dropper | Drops all spawner loot |
@@ -56,10 +60,10 @@
 | Spawner Protect | Breaks spawner + stores it when player detected |
 | Storage Stealer | Steals items from chests and shulkers |
 | Tab Detector | Detects when specific players join/leave |
-| TPA All Macro | Cycles players + sends /tpa or /tpahere |
+| TPA All Macro | Cycles players + sends /tpa or /tpahere (not implemented yet) |
 | TPA Macro | Spam-sends /tpa or /tpahere + auto-clicks confirmation |
-| Tunnel Base Finder | Mines downward, then uses #tunnel horizontally |
-| UI Helper | Helps perform various UI tasks automatically |
+| Tunnel Base Finder | Mines downward, then uses #tunnel horizontally (not implemented yet) |
+| UI Helper | Helps perform various UI tasks automatically (not implemented yet) |
 
 ### ESP Modules (27)
 
@@ -67,17 +71,19 @@
 |---|---|
 | 1x1x1 Holes | Highlights small player-made air holes |
 | Advanced Stash Finder | Stash finder with webhook + auto disconnect |
+| Amethyst ESP | Finds amethyst geodes and marks the chunks holding them |
 | Bedrock Void ESP | ESP for bedrock void patterns |
 | Beehive ESP | Detects full beehives with threading + tracer |
 | Block Notifier | Notifies when selected blocks appear + ESP |
-| Chunk Finder | Finds suspicious chunk patterns |
+| Chunk Finder | Finds suspicious chunk patterns 
++ 13 optional base detectors |
 | Cluster Finder | ESP for amethyst clusters + buds |
 | Collectible ESP | Highlights framed collectibles + banners |
 | Covered Hole | Detects covered holes with performance optimization |
 | Deepslate ESP | ESP for deepslate variants |
 | Dripstone ESP | Detects long dripstones with threading |
 | Drowned Trident ESP | Highlights drowned with tridents |
-| Fake Scoreboard | Custom Blazed scoreboard overlay |
+| Fake Scoreboard | Custom Blazed scoreboard overlay (not implemented yet) |
 | Hole Tunnel Stairs ESP | Highlights holes, tunnels, stairs |
 | Invis ESP | 3D hitbox rendering for invisible players and mobs |
 | Kelp ESP | Highlights suspicious kelp chunk patterns |
@@ -98,19 +104,20 @@
 
 | Module | Description |
 |---|---|
-| Aim Assist | Aims at entities (Grim AC v3 bypass) |
+| Aim Assist | Aims at entities (Grim AC v3 bypass) (not implemented yet)|
 | Anchor Macro | Automatically charges and explodes respawn anchors |
 | Anti Trap | Escape armor stands + minecart traps |
 | Auto Double Hand | Switches to totem after pop |
 | Auto Inv Totem | Moves totems to offhand after pop in inventory |
-| Breach Swap | Mace swap on attack + return |
+| Breach Swap | Mace swap on attack + return (not implemented yet) |
 | Crystal Macro | Fast crystal placing |
-| Double Anchor Macro | Places + charges 2 anchors |
+| Double Anchor Macro | Places + charges 2 anchors (not implemented yet) |
 | Hover Totem | Equips offhand totem when hovering in inventory |
 | Key Pearl | Switches + throws pearl on keybind |
+| Lunge Macro | Swaps to lunge spear, lunges, swaps back (not on 1.21.4) |
 | Shield Breaker | Axe swap + auto shield break then switch back |
-| Sword Place Obsidian | Right-click obsidian then switch back |
-| Wind Pearl Macro | Throws pearl then wind charge |
+| Sword Place Obsidian | Right-click obsidian then switch back (not implemented yet) |
+| Wind Pearl Macro | Throws pearl then wind charge (not implemented yet) |
 
 ---
 
@@ -123,6 +130,7 @@ Pair your Blazed setup with these built-in Meteor modules for max efficiency:
 - `Fast Place` – Places blocks faster than vanilla
 - `Auto Tool` – Automatically switches to the best tool
 - `Freecam` – View surroundings without moving
+
 - `Storage ESP` – Highlights chests, shulkers, barrels
 - `Tracers` – Draws lines to players, mobs, storage
 
@@ -175,6 +183,7 @@ Huge thanks to the projects that make this addon possible:
 - [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)
 - [Baritone](https://github.com/cabaletta/baritone)
 - [FabricMC](https://fabricmc.net/)
+- [ExploitPreventer](https://github.com/NikOverflow/ExploitPreventer) by NikOverflow (MIT) — bundled inside the jar
 - [Claude AI](https://claude.ai/)
 - Github Contributors
 

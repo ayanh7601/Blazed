@@ -9,11 +9,11 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.FindItemResult;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.InteractionHand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,9 @@ public class AutoMine extends Module {
             .visible(autoEat::get)
             .build());
 
-    private final Setting<List<Item>> foodItems = sgGeneral.add(new ItemListSetting.Builder()
+        private final Setting<List<Item>> foodItems = sgGeneral.add(new ItemListSetting.Builder()
             .name("food-items")
             .description("Food items the module is allowed to use.")
-            .filter(item -> item.getComponents().contains(net.minecraft.component.DataComponentTypes.FOOD))
             .defaultValue(Items.BREAD, Items.COOKED_BEEF, Items.COOKED_PORKCHOP, Items.COOKED_CHICKEN, Items.COOKED_MUTTON)
             .visible(autoEat::get)
             .build());
@@ -72,7 +71,7 @@ public class AutoMine extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.player == null || mc.world == null || mc.interactionManager == null)
+        if (mc.player == null || mc.level == null || mc.gameMode == null)
             return;
 
         boolean pausedThisTick = false;
@@ -111,7 +110,7 @@ public class AutoMine extends Module {
     }
 
     private boolean handleAutoEat() {
-        if (mc.player.getHungerManager().getFoodLevel() > eatAtHunger.get())
+        if (mc.player.getFoodData().getFoodLevel() > eatAtHunger.get())
             return false;
         if (mc.player.isUsingItem())
             return true;
@@ -121,15 +120,15 @@ public class AutoMine extends Module {
             return false;
 
         if (foodResult.isOffhand()) {
-            mc.interactionManager.interactItem(mc.player, Hand.OFF_HAND);
+            mc.gameMode.useItem(mc.player, InteractionHand.OFF_HAND);
         } else {
             if (foodResult.isHotbar() && foodResult.slot() != VersionUtil.getSelectedSlot(mc.player)) {
                 InvUtils.swap(foodResult.slot(), false);
             }
-            mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+            mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
         }
 
-        mc.player.swingHand(Hand.MAIN_HAND);
+        mc.player.swing(InteractionHand.MAIN_HAND);
         cancelMineProcess();
         return true;
     }

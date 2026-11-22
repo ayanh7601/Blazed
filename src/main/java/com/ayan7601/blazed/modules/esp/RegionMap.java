@@ -1,5 +1,8 @@
 package com.ayan7601.blazed.modules.esp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ayan7601.blazed.BlazedAddon;
 import meteordevelopment.meteorclient.events.render.Render2DEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
@@ -9,12 +12,13 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegionMap extends Module {
+    private static final Logger LOG = LoggerFactory.getLogger("Blazed");
+
     private final SettingGroup displaySettings = settings.createGroup("Display");
     private final SettingGroup positionSettings = settings.createGroup("Position");
     private final SettingGroup visualSettings = settings.createGroup("Visual");
@@ -120,7 +124,7 @@ public class RegionMap extends Module {
         if (!isValidRenderState()) return;
 
         try {
-            Vec3d playerPos = new Vec3d(mc.player.getX(), mc.player.getY(), mc.player.getZ());
+            Vec3 playerPos = new Vec3(mc.player.getX(), mc.player.getY(), mc.player.getZ());
             MapRenderContext ctx = new MapRenderContext(
                     mapPosX.get(), mapPosY.get(),
                     cellDimension.get(), mapTransparency.get()
@@ -133,30 +137,30 @@ public class RegionMap extends Module {
                 regionRenderer.renderGridLines(ctx, gridLineColor.get());
             }
 
-            regionRenderer.renderRegionNumbers(ctx, mapData, labelTextSize.get());
+            regionRenderer.renderRegionNumbers(event.graphics, ctx, mapData, labelTextSize.get());
 
             if (enablePlayerIndicator.get()) {
                 playerTracker.renderPlayerPosition(ctx, playerPos,
-                        mc.player.getYaw(), playerIndicatorColor.get());
+                        mc.player.getYRot(), playerIndicatorColor.get());
             }
 
             if (enableCoordinates.get()) {
-                renderPlayerInfo(ctx, playerPos);
+                renderPlayerInfo(event.graphics, ctx, playerPos);
             }
 
             if (enableRegionLabels.get()) {
-                renderRegionLegend(ctx);
+                renderRegionLegend(event.graphics, ctx);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
         }
     }
 
     private boolean isValidRenderState() {
-        return mc != null && mc.player != null && mc.world != null;
+        return mc != null && mc.player != null && mc.level != null;
     }
 
-    private void renderPlayerInfo(MapRenderContext ctx, Vec3d pos) {
+    private void renderPlayerInfo(net.minecraft.client.gui.GuiGraphicsExtractor graphics, MapRenderContext ctx, Vec3 pos) {
         if (pos == null || ctx == null) return;
 
         try {
@@ -165,7 +169,7 @@ public class RegionMap extends Module {
             TextRenderer textRenderer = TextRenderer.get();
             if (textRenderer == null) return;
 
-            textRenderer.begin(1.0, false, true);
+            textRenderer.begin(graphics, 1.0, false, true);
 
             String coordsText = String.format("Position: X: %d, Z: %d", (int)pos.x, (int)pos.z);
             textRenderer.render(coordsText, ctx.mapX, infoY, Color.WHITE, false);
@@ -179,11 +183,11 @@ public class RegionMap extends Module {
 
             textRenderer.end();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
         }
     }
 
-    private void renderRegionLegend(MapRenderContext ctx) {
+    private void renderRegionLegend(net.minecraft.client.gui.GuiGraphicsExtractor graphics, MapRenderContext ctx) {
         if (ctx == null) return;
 
         try {
@@ -200,19 +204,19 @@ public class RegionMap extends Module {
                 int legendY = legendStartY + i * 16;
                 Renderer2D.COLOR.quad(ctx.mapX, legendY, 14, 14, regionTypeColors[i]);
             }
-            Renderer2D.COLOR.render(null);
+            Renderer2D.COLOR.render();
 
             TextRenderer textRenderer = TextRenderer.get();
             if (textRenderer == null) return;
 
-            textRenderer.begin(1.0, false, true);
+            textRenderer.begin(graphics, 1.0, false, true);
             for (int i = 0; i < regionTypes.length; i++) {
                 int legendY = legendStartY + i * 16 + 3;
                 textRenderer.render(regionTypes[i], ctx.mapX + 18, legendY, Color.WHITE, false);
             }
             textRenderer.end();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
         }
     }
 
@@ -281,7 +285,7 @@ public class RegionMap extends Module {
                     return info != null ? info.regionId : -1;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
             return -1;
         }
@@ -297,7 +301,7 @@ public class RegionMap extends Module {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
             return "Unknown";
         }
@@ -392,9 +396,9 @@ public class RegionMap extends Module {
 
                 Renderer2D.COLOR.begin();
                 Renderer2D.COLOR.quad(ctx.mapX, ctx.mapY, ctx.getMapWidth(), ctx.getMapHeight(), bgColor);
-                Renderer2D.COLOR.render(null);
+                Renderer2D.COLOR.render();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
         }
 
@@ -425,9 +429,9 @@ public class RegionMap extends Module {
                     }
                 }
 
-                Renderer2D.COLOR.render(null);
+                Renderer2D.COLOR.render();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
         }
 
@@ -450,20 +454,20 @@ public class RegionMap extends Module {
                     Renderer2D.COLOR.quad(ctx.mapX, lineY, ctx.getMapWidth(), 1, lineColor);
                 }
 
-                Renderer2D.COLOR.render(null);
+                Renderer2D.COLOR.render();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
         }
 
-        void renderRegionNumbers(MapRenderContext ctx, MapDataManager dataManager, double textScale) {
+        void renderRegionNumbers(net.minecraft.client.gui.GuiGraphicsExtractor graphics, MapRenderContext ctx, MapDataManager dataManager, double textScale) {
             if (ctx == null || dataManager == null) return;
 
             try {
                 TextRenderer textRenderer = TextRenderer.get();
                 if (textRenderer == null) return;
 
-                textRenderer.begin(textScale, false, true);
+                textRenderer.begin(graphics, textScale, false, true);
 
                 int mapSize = dataManager.getMapSize();
                 for (int row = 0; row < mapSize; row++) {
@@ -489,14 +493,14 @@ public class RegionMap extends Module {
 
                 textRenderer.end();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
         }
     }
 
     private class PlayerTracker {
 
-        void renderPlayerPosition(MapRenderContext ctx, Vec3d playerPos, float yaw, SettingColor indicatorColor) {
+        void renderPlayerPosition(MapRenderContext ctx, Vec3 playerPos, float yaw, SettingColor indicatorColor) {
             if (ctx == null || playerPos == null || indicatorColor == null) return;
 
             try {
@@ -514,7 +518,7 @@ public class RegionMap extends Module {
                     renderDirectionalIndicator(indicatorX, indicatorY, rotationAngle, indicatorColor);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
         }
 
@@ -536,9 +540,9 @@ public class RegionMap extends Module {
                 int rightBaseY = centerY - (int)(Math.sin(rightBaseAngle) * arrowSize);
 
                 drawTriangleFilled(tipX, tipY, leftBaseX, leftBaseY, rightBaseX, rightBaseY, indicatorCol);
-                Renderer2D.COLOR.render(null);
+                Renderer2D.COLOR.render();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Unhandled error in " + getClass().getSimpleName(), e);
             }
         }
 

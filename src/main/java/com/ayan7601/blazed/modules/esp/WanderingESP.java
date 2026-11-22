@@ -10,10 +10,9 @@ import meteordevelopment.meteorclient.utils.render.RenderUtils;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.entity.passive.WanderingTraderEntity;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
+import net.minecraft.world.item.Items;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -29,8 +28,6 @@ public class WanderingESP extends Module {
     private final SettingGroup sgRender = settings.createGroup("Render");
     private final SettingGroup sgwebhook = settings.createGroup("Webhook");
 
-
-    // Render settings
     private final Setting<Boolean> showTracers = sgRender.add(new BoolSetting.Builder()
         .name("Show Tracers")
         .description("Draw tracer lines to wandering traders")
@@ -111,23 +108,20 @@ public class WanderingESP extends Module {
 
     @EventHandler
     private void onRender3D(Render3DEvent event) {
-        if (mc.player == null || mc.world == null) return;
+        if (mc.player == null || mc.level == null) return;
 
         Set<Integer> currentTraders = new HashSet<>();
 
-        // Find all wandering traders in the world
-        for (net.minecraft.entity.Entity entity : mc.world.getEntities()) {
-            if (entity instanceof WanderingTraderEntity) {
-                WanderingTraderEntity trader = (WanderingTraderEntity) entity;
+        for (net.minecraft.world.entity.Entity entity : mc.level.entitiesForRendering()) {
+            if (entity instanceof WanderingTrader) {
+                WanderingTrader trader = (WanderingTrader) entity;
                 currentTraders.add(entity.getId());
 
-                // Draw tracers if enabled
                 if (showTracers.get()) {
                     double x = VersionUtil.getPrevX(entity) + (entity.getX() - VersionUtil.getPrevX(entity)) * event.tickDelta;
                     double y = VersionUtil.getPrevY(entity) + (entity.getY() - VersionUtil.getPrevY(entity)) * event.tickDelta;
                     double z = VersionUtil.getPrevZ(entity) + (entity.getZ() - VersionUtil.getPrevZ(entity)) * event.tickDelta;
 
-                    // Target the center/body of the trader
                     double height = trader.getBoundingBox().maxY - trader.getBoundingBox().minY;
                     y += height / 2;
 
@@ -137,7 +131,6 @@ public class WanderingESP extends Module {
             }
         }
 
-        // Check if we found new traders
         if (!currentTraders.isEmpty() && !currentTraders.equals(detectedTraders)) {
             Set<Integer> newTraders = new HashSet<>(currentTraders);
             newTraders.removeAll(detectedTraders);
@@ -158,10 +151,10 @@ public class WanderingESP extends Module {
 
         switch (notificationMode.get()) {
             case Chat -> { if (notifications.get()) info("(highlight)%s", message); }
-            case Toast -> mc.getToastManager().add(new MeteorToast(Items.EMERALD, title, message));
+            case Toast -> mc.gui.toastManager().addToast(new MeteorToast.Builder(title).text(message).icon(Items.EMERALD).build());
             case Both -> {
                 if (notifications.get()) info("(highlight)%s", message);
-                mc.getToastManager().add(new MeteorToast(Items.EMERALD, title, message));
+                mc.gui.toastManager().addToast(new MeteorToast.Builder(title).text(message).icon(Items.EMERALD).build());
             }
         }
 
@@ -187,8 +180,8 @@ public class WanderingESP extends Module {
 
         CompletableFuture.runAsync(() -> {
             try {
-                String serverInfo = mc.getCurrentServerEntry() != null ?
-                    mc.getCurrentServerEntry().address : "Unknown Server";
+                String serverInfo = mc.getCurrentServer() != null ?
+                    mc.getCurrentServer().ip : "Unknown Server";
 
                 String messageContent = "";
                 if (selfPing.get() && !discordId.get().trim().isEmpty()) {
@@ -198,7 +191,6 @@ public class WanderingESP extends Module {
                 String traderText = traderCount == 1 ? "trader" : "traders";
                 String description = String.format("%d wandering %s detected!", traderCount, traderText);
 
-                // Get current coordinates
                 String coordinates = "Unknown";
                 if (mc.player != null) {
                     coordinates = String.format("X: %.0f, Y: %.0f, Z: %.0f",
@@ -253,8 +245,8 @@ public class WanderingESP extends Module {
     }
 
     private void disconnectFromServer(String reason) {
-        if (mc.world != null && mc.getNetworkHandler() != null) {
-            mc.getNetworkHandler().getConnection().disconnect(Text.literal(reason));
+        if (mc.level != null && mc.getConnection() != null) {
+            mc.getConnection().getConnection().disconnect(Component.literal(reason));
             if (notifications.get()) info("Disconnected from server - " + reason);
         }
     }

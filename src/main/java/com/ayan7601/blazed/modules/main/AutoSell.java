@@ -6,9 +6,9 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.player.ChatUtils;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class AutoSell extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.player == null || mc.world == null)
+        if (mc.player == null || mc.level == null)
             return;
 
         if (itemsToSell.get().isEmpty())
@@ -76,13 +76,13 @@ public class AutoSell extends Module {
 
     private void sendSellCommand() {
         String itemNames = itemsToSell.get().stream()
-                .map(item -> Registries.ITEM.getId(item).getPath())
-                .collect(Collectors.joining(" "));
+            .map(item -> BuiltInRegistries.ITEM.getKey(item).getPath())
+            .collect(Collectors.joining(" "));
 
         if (itemNames.isEmpty())
             return;
 
-        mc.player.networkHandler.sendChatCommand("sellall " + itemNames);
+        mc.getConnection().sendCommand("sellall " + itemNames);
 
         if (notifyOnSell.get()) {
             ChatUtils.info("Selling: " + itemNames);

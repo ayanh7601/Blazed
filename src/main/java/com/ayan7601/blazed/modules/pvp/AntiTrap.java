@@ -8,9 +8,9 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +51,8 @@ public class AntiTrap extends Module {
         super(BlazedAddon.pvp, "anti-trap", "Allows you to escape from armor stands and chest minecarts.");
     }
 
-
     @Override
     public void onActivate() {
-
 
         if (removeExisting.get()) {
             removeTrapEntities();
@@ -73,12 +71,12 @@ public class AntiTrap extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.world == null) return;
+        if (mc.level == null) return;
 
-        if (mc.player.age % 20 == 0) { // Check every second
+        if (mc.player.tickCount % 20 == 0) {
             List<Entity> toRemove = new ArrayList<>();
 
-            for (Entity entity : mc.world.getEntities()) {
+            for (Entity entity : mc.level.entitiesForRendering()) {
                 if (isTrapEntity(entity)) {
                     toRemove.add(entity);
                 }
@@ -91,11 +89,11 @@ public class AntiTrap extends Module {
     }
 
     private void removeTrapEntities() {
-        if (mc.world == null) return;
+        if (mc.level == null) return;
 
         List<Entity> trapEntities = new ArrayList<>();
 
-        for (Entity entity : mc.world.getEntities()) {
+        for (Entity entity : mc.level.entitiesForRendering()) {
             if (isTrapEntity(entity)) {
                 trapEntities.add(entity);
             }
@@ -113,13 +111,11 @@ public class AntiTrap extends Module {
     private boolean isTrapEntity(Entity entity) {
         if (entity == null) return false;
 
-        EntityType<?> type = entity.getType();
-
-        if (armorStands.get() && type == EntityType.ARMOR_STAND) {
+        if (armorStands.get() && entity instanceof ArmorStand) {
             return true;
         }
 
-        if (chestMinecarts.get() && type == EntityType.CHEST_MINECART) {
+        if (chestMinecarts.get() && entity instanceof MinecartChest) {
             return true;
         }
 
