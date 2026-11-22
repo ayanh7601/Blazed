@@ -57,8 +57,12 @@ import net.minecraft.client.gui.screens.worldselection.EditWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
 import net.minecraft.realms.RealmsScreen;
 import net.minecraft.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DiscordPresence extends Module {
+    private static final Logger LOG = LoggerFactory.getLogger("Blazed");
+
     public enum SelectMode {
         Random,
         Sequential
@@ -134,7 +138,11 @@ public class DiscordPresence extends Module {
 
     @Override
     public void onActivate() {
-        DiscordIPC.start(1545725506870313012L, null);
+        DiscordIPC.setOnError((code, message) -> LOG.warn("Discord IPC error {}: {}", code, message));
+        boolean connected = DiscordIPC.start(1545725506870313012L,
+            () -> LOG.info("Discord IPC handshake completed; Discord is ready."));
+        if (connected) LOG.info("Discord IPC opened; waiting for Discord handshake.");
+        else LOG.warn("Discord IPC could not open a connection to a running Discord client.");
 
         rpc.setStart(System.currentTimeMillis() / 1000L);
 
