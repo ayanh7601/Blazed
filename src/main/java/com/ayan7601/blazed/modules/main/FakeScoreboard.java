@@ -36,7 +36,7 @@ public class FakeScoreboard extends Module {
     private final Setting<String> title = sgGeneral.add(new StringSetting.Builder()
         .name("title")
         .description("Text at the top of the board.")
-        .defaultValue("Drdonutt")
+        .defaultValue("Blazed")
         .build()
     );
 

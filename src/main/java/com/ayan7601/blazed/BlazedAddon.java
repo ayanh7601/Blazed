@@ -47,7 +47,7 @@ public class BlazedAddon extends MeteorAddon {
         Modules.get().add(new OneByOneHoles());
         Modules.get().add(new PillagerESP());
         Modules.get().add(new PistonESP());
-        Modules.get().add(new RegionMap());
+    //  Modules.get().add(new RegionMap());
         Modules.get().add(new RotatedDeepslateESP());
         Modules.get().add(new SkeletonESP());
         Modules.get().add(new SweetBerryESP());
@@ -78,7 +78,6 @@ public class BlazedAddon extends MeteorAddon {
         Modules.get().add(new OrderDropper());
         Modules.get().add(new PlayerDetection());
         Modules.get().add(new PremiumTunnelBaseFinder());
-        Modules.get().add(new RTPer());
         Modules.get().add(new RainNoti());
         Modules.get().add(new ShulkerDropper());
         Modules.get().add(new SpawnerDropper());
