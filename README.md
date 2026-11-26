@@ -6,17 +6,17 @@
 
 ---
 
-## Meteor Client Addon For almost every sever
+## Meteor Client Addon For minecraft servers
 
-**Blazed** is a free Meteor Client addon designed specifically for servers. I made this to automate the boring and repetitive tasks I kept doing in-game and to give others access to high-quality tools **without paying**. I've seen many paid clients that do less than this one — this is my free alternative.
+**Blazed** is a free Meteor Client addon designed specifically for minecraft servers. I made this to automate the boring and repetitive tasks I kept doing in-game and to give others access to high-quality tools **without paying**. I've seen many paid clients that do less than this one — this is my free alternative.
 
-**79 modules** across 3 categories. Minecraft **1.21.4, 1.21.10, 1.21.11, 26.1.2**.
+**79 modules** across 3 categories. Minecraft **1.21.4, 1.21.10, 1.21.11, 26.1.2, 26.2**.
 
 ---
 
 ## 🚀Features
 
-### Main Modules (39)
+### Main Modules
 
 | Module | Description |
 |---|---|
@@ -61,7 +61,7 @@
 | Tunnel Base Finder | Mines downward, then uses #tunnel horizontally |
 | UI Helper | Helps perform various UI tasks automatically |
 
-### ESP Modules (27)
+### ESP Modules
 
 | Module | Description |
 |---|---|
@@ -94,7 +94,7 @@
 | Vine ESP | Highlights vines touching the ground |
 | Wandering ESP | Detects wandering traders |
 
-### PvP Modules (13)
+### PvP Modules
 
 | Module | Description |
 |---|---|
